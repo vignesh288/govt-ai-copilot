@@ -4,7 +4,8 @@ const path = require('path');
 
 const port = process.env.PORT || 3100;
 const backendBaseUrl = process.env.BACKEND_URL || 'http://127.0.0.1:8081';
-const root = __dirname;
+const distRoot = path.join(__dirname, 'dist');
+const root = fs.existsSync(path.join(distRoot, 'assets')) ? distRoot : __dirname;
 const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8',
