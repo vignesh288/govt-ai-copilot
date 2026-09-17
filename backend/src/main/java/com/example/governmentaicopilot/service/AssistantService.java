@@ -1,8 +1,11 @@
 package com.example.governmentaicopilot.service;
 
+import org.springframework.stereotype.Service;
+
 import com.example.governmentaicopilot.dto.AssistantRequest;
 import com.example.governmentaicopilot.dto.AssistantResponse;
 
+@Service
 public class AssistantService {
 
     public AssistantResponse answer(AssistantRequest request) {

@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import Button from './Button';
+import { askAssistant } from '../api/assistant';
 
 const featureItems = [
   { title: 'Scholarships', description: 'Find education support and application guidance.' },
@@ -42,10 +43,10 @@ const LandingSection = ({ openAuth, theme, onToggleTheme }) => {
   const [assistantAnswer, setAssistantAnswer] = useState(null);
   const [assistantLoading, setAssistantLoading] = useState(false);
   const [assistantError, setAssistantError] = useState('');
+  const [language, setLanguage] = useState('en');
   const assistantRef = useRef(null);
-  const assistantApiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8081';
 
-  const askAssistant = async (question) => {
+  const askAssistantHandler = async (question) => {
     const trimmed = question?.trim();
     if (!trimmed) return;
 
@@ -53,32 +54,17 @@ const LandingSection = ({ openAuth, theme, onToggleTheme }) => {
     setAssistantError('');
     setAssistantAnswer(null);
 
-    try {
-      const response = await fetch(`${assistantApiUrl}/api/assistant`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: trimmed, language: 'en' }),
-      });
-      const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.message || 'Unable to reach assistant');
-      }
-      setAssistantAnswer(result.answer || 'No answer available.');
-    } catch (error) {
-      setAssistantError(error.message || 'Unable to fetch assistant response');
-    } finally {
-      setAssistantLoading(false);
-    }
+    await askAssistant(trimmed, language, setAssistantAnswer, setAssistantError, setAssistantLoading);
   };
 
   const handleAssistantSubmit = async (event) => {
     event.preventDefault();
-    await askAssistant(assistantQuery);
+    await askAssistantHandler(assistantQuery);
   };
 
   const handleSuggestion = async (question) => {
     setAssistantQuery(question);
-    await askAssistant(question);
+    await askAssistant(question, language, setAssistantAnswer, setAssistantError, setAssistantLoading);
   };
 
   const handleTalkToAI = () => {
@@ -108,10 +94,15 @@ const LandingSection = ({ openAuth, theme, onToggleTheme }) => {
           <button className="landing-icon-btn" type="button" onClick={onToggleTheme} aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
-          <select className="landing-select" aria-label="Language selector">
-            <option>EN</option>
-            <option>HI</option>
-            <option>TE</option>
+          <select
+            className="landing-select"
+            aria-label="Language selector"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+          >
+            <option value="en">EN</option>
+            <option value="hi">HI</option>
+            <option value="te">TE</option>
           </select>
         </div>
       </header>

@@ -2,7 +2,8 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const port = process.env.PORT || 3100;
+const port = Number(process.env.PORT) || 3100;
+const host = process.env.HOST || '0.0.0.0';
 const backendBaseUrl = process.env.BACKEND_URL || 'http://127.0.0.1:8081';
 const distRoot = path.join(__dirname, 'dist');
 const root = fs.existsSync(path.join(distRoot, 'assets')) ? distRoot : __dirname;
@@ -50,6 +51,20 @@ const server = http.createServer((req, res) => {
   }
 
   fs.readFile(filePath, (err, data) => {
+    if (err && err.code === 'ENOENT' && root === distRoot) {
+      fs.readFile(path.join(root, 'index.html'), (fallbackError, fallbackData) => {
+        if (fallbackError) {
+          res.writeHead(404);
+          res.end('Not Found');
+          return;
+        }
+
+        res.writeHead(200, { 'Content-Type': mimeTypes['.html'] });
+        res.end(fallbackData);
+      });
+      return;
+    }
+
     if (err) {
       res.writeHead(404);
       res.end('Not Found');
@@ -62,7 +77,7 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(port, () => {
-  console.log(`Frontend running at http://localhost:${port}`);
+server.listen(port, host, () => {
+  console.log(`Frontend listening on ${host}:${port}`);
   console.log(`API proxy forwarding to ${backendBaseUrl}`);
 });

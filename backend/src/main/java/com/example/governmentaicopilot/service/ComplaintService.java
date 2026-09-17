@@ -2,6 +2,7 @@ package com.example.governmentaicopilot.service;
 
 import java.util.List;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.example.governmentaicopilot.dto.ComplaintRequest;
@@ -33,13 +34,13 @@ public class ComplaintService {
         return complaintRepository.findAll().stream().map(complaintMapper::toResponse).toList();
     }
 
-    public ComplaintResponse getComplaint(Long id) {
+    public ComplaintResponse getComplaint(@NonNull Long id) {
         Complaint complaint = complaintRepository.findById(id)
             .orElseThrow(() -> new ApiException("Complaint not found"));
         return complaintMapper.toResponse(complaint);
     }
 
-    public ComplaintResponse updateStatus(Long id, String status) {
+    public ComplaintResponse updateStatus(@NonNull Long id, @NonNull String status) {
         Complaint complaint = complaintRepository.findById(id)
             .orElseThrow(() -> new ApiException("Complaint not found"));
         complaint.setStatus(status);

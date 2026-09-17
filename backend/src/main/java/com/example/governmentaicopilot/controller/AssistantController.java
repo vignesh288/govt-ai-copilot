@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3100"})
 public class AssistantController {
 
-    private final AssistantService assistantService = new AssistantService();
+    private final AssistantService assistantService;
+
+    public AssistantController(AssistantService assistantService) {
+        this.assistantService = assistantService;
+    }
 
     @PostMapping("/api/assistant")
     public AssistantResponse assist(@RequestBody AssistantRequest request) {
