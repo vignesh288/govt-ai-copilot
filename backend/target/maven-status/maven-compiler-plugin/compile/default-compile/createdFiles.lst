@@ -1,7 +1,0 @@
-com\example\governmentaicopilot\controller\HealthController.class
-com\example\governmentaicopilot\service\ComplaintSuggestionResponse.class
-com\example\governmentaicopilot\controller\WorkflowsController.class
-com\example\governmentaicopilot\service\ComplaintSuggestionRequest.class
-com\example\governmentaicopilot\controller\ComplaintSuggestionController.class
-com\example\governmentaicopilot\GovernmentAiCopilotApplication.class
-com\example\governmentaicopilot\service\ComplaintSuggestionService.class
